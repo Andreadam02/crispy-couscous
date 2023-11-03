@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MySite</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- Bootstrap CSS -->
+    
+</head>
+<style>
+    div.polaroid {
+                    width: 80%;
+                    background-color: white;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+
+.fighter-card-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.fighter-card {
+    width: calc(33.33% - 20px);
+    margin: 10px;
+}
+img {width: 100%}
+
+div.container {
+                text-align: center;
+                padding: 10px 20px;
+}
+
+.imageborder { 
+    border: 1px solid #000; }
+    
+
+.button {
+    background-color: white; /* Green */
+    border-radius: 8px;
+    color: black;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 10px;
+    border: 2px solid rgb(109, 109, 238);
+    transition-duration: 0.4s;
+}
+.button:hover{
+    background-color: rgb(109, 109, 238);
+    color: white;
+}
+
+.p1{
+    font-family: serif;
+}
+
+
+box {
+    width: 320px;
+    padding: 10px;
+    border: 5px solid gray;
+    margin: 0;
+}
+
+</style>
+<body>
+
+<nav class="navbar bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">Navbar</a>
+        {% load static %}
+        <img src="{% static 'fighters/APD.jpg'}" alt="Logo" width="30" height="24" class="d-inline-block align-top, text.w3-left-align">
+    </div>
+</nav>
+
+
+<nav class="navbar bg-light">
+    <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">Navbar</span>
+    </div>
+</nav>
+<nav class="navbar bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+        </a>
+    </div>
+</nav>
+<div class="w3-top">
+    <div class="w3-bar w3-black w3-wide w3-padding w3-card">
+        <a href="#home" class="w3-bar-item w3-button"><b>MySite</b></a>
+
+        <div class="w3-right w3-hide-small">
+            <a href="#Project" class="w3-bar-item w3-button">Fighter</a>
+            <a href="#contact" class="w3-bar-item w3-button">Contattaci</a>
+        </div>
+    </div>
+</div>
+
+<header class="w3-display-container w3-content w3-wide" style="max-width:1500px; text-align: center" id="home">
+    <div class="container-fluid">
+        <h1 class="p1"  style="text-align: center">Benvenuto su MySite!!</h1>
+        <p class="p1">
+            Se sei un vero appassionato di arti marziali miste, sei nel posto giusto. Questo è il luogo dove la tua voce conta, dove puoi far sentire il tuo giudizio e sostenere il tuo fighter preferito. Abbiamo radunato alcuni dei migliori lottatori di MMA di tutto il mondo, e ora spetta a te decidere chi merita di essere incoronato come il migliore di tutti.          Inizia a sfogliare la galleria dei nostri eroi dell'MMA, scopri le loro storie epiche e le loro abilità straordinarie. Vota per il fighter che pensi abbia dimostrato il massimo impegno, talento e coraggio nell'ottagono. Il tuo voto farà la differenza, e il fighter con il punteggio più alto riceverà l'ambito titolo di "Miglior Fighter dell'MMA".Non perdere questa opportunità unica di far parte dell'azione. Ricorda, qui i veri campioni sono scelti dai fan. Unisciti a noi e vota per il prossimo re dell'ottagono!</p>
+
+    </div>
+</header>
+
+
+<div class="w3-content w3-padding" style="max-width:1564px">
+
+    <!-- Project Section -->
+    <div class="w3-container w3-padding-32" id="Project">
+        <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Fighter</h3>
+    </div>
+    <div class="container fighter-card-container">
+        {%for fighter in fighters %}
+        <div class="fighter-card">
+            <div class="card" style="width: 18rem;">
+                {% if fighter.immagine %}
+                    <img src="{{ fighter.immagine.url }}" class="imageborder" alt="...">
+                {% else %}
+                    <p>Immagine non disponibile</p>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ fighter.nome }}</h5>
+                    <p class="card-text">{{ fighter.descrizione }}</p>
+                    <a href="/fighters/statistiche" type="button" class="button">Info</a>
+                    <div id="vote-message" style="display: none;"></div>
+                    <p id="rating-{{ fighter.id }}">Punteggio: {{ fighter.rating }}</p>
+                    <input type="number" id="vote-{{ fighter.id }}" min="1" max="5" step="1">
+                    <button data-fighter-id="{{ fighter.id }}" class="vote-button button">Vota</button>
+                    <div id="vote-message-{{ fighter.id }}" style="display: none;">Il tuo voto è andato a buon fine!! GGx</div>
+                </div>
+            </div>
+        </div>
+        {%endfor %}
+        </div>
+</div>
+
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit", style="text-align: center;">Inserisci Dati</button>
+</form>
+
+<!-- Pulsante per l'upload del file -->
+<form method="post" enctype="multipart/form-data" action="{% url 'input' %}">
+    <a href="{% url 'input' %}"></a>
+    {% csrf_token %}
+    <input type="file" name="file">
+    <a href="{% url 'input' %}"></a>
+    <button type="submit">Carica File</button>
+</form>
+
+
+
+
+    <div class="fa-box" id="contact">
+        <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Contattaci</h3>
+        <p>Per aiutarci a migliore il sito:
+        <a href="mailto:305379@studenti.unimore.it">Premi qui</a></p>
+    </div>
+
+    <script>
+            document.addEventListener('DOMContentLoaded', function() {
+        const voteButtons = document.querySelectorAll('.vote-button');
+    
+        voteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const fighterId = this.getAttribute('data-fighter-id');
+                const ratingInput = document.querySelector(`#vote-${fighterId}`);
+                const rating = ratingInput.value;
+    
+                const formData = new FormData();
+                formData.append('fighter_id', fighterId);
+                formData.append('rating', rating);
+    
+                fetch('/fighters/vota/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Aggiorna il punteggio sulla pagina
+                    const ratingElement = document.querySelector(`#rating-${fighterId}`);
+                    ratingElement.textContent = `Punteggio: ${data.rating}`;
+    
+                    // Visualizza un messaggio di successo
+                    const voteMessage = document.querySelector(`#vote-message-${fighterId}`);
+                    voteMessage.textContent = 'Votato con successo!';
+                    voteMessage.style.color = 'green'; // Cambia il colore del messaggio a verde
+                    voteMessage.style.display = 'block';
+    
+                    // Nascondi il messaggio dopo 3 secondi
+                    setTimeout(() => {
+                        voteMessage.style.display = 'none';
+                    }, 3000);
+                })
+                .catch(error => {
+                    console.error('Errore durante la richiesta:', error);
+                    // Visualizza un messaggio di errore
+                    const voteMessage = document.querySelector(`#vote-message-${fighterId}`);
+                    voteMessage.textContent = 'Errore durante il voto.';
+                    voteMessage.style.color = 'red'; // Cambia il colore del messaggio a rosso
+                    voteMessage.style.display = 'block';
+                });
+            });
+        });
+    });
+ </script>
+ 
+
+
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+        crossorigin="anonymous"></script>
+
+<footer style="background-color: black;" class="w3-container w3-padding-32 w3-center w3-opacity">
+    <div style="color: white;"  class="w3-xlarge w3-padding-16">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+        Seguici su:
+        <a style="color: white;"href="https://www.facebook.com/unimore.it/?locale=it_IT" class="w3-hover-opacity"><i class="fab fa-facebook"></i></a>
+        <a style="color: white;" href="https://instagram.com/unimore_official?igshid=MWZjMTM2ODFkZg==" class="w3-hover-opacity"><i class="fab fa-instagram"></i></a>
+        
+        <h2 >Autore: Andrea Pio D'Ambrosio 
+            <p>Unimore Università degli studi di Modena e Reggio Emilia</p></h2></p>
+            <p style="color: white;">&copy; 2023 MySite.
+</footer>
+        
+</body>
+
+</html>

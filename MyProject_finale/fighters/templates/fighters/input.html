@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inserisci Fighter</title>
+</head>
+<form id="myform" method="POST" action="{% url 'input' %}" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="file" name="immagine"> <!-- Assicurati che il nome sia 'immagine' se è il nome del campo nel modello Fighter -->
+  <button type="submit">Carica File</button>
+</form>
+
+
